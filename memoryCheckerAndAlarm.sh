@@ -2,16 +2,16 @@
 
 thresholdRamPercent=80 # Should be an integer
 
-warningMessage="WARNING: RAM usage above $thresholdRamPercent percentage.\n\
-Please free some RAM."
-
 while true ; do
 
     # Get used RAM % via free(1) .
-    #usedRamPercent=$(free | grep Mem | awk '{print $3/$2 * 100.0}' | sed 's/\..*$//g')
+    usedRamPercent=$(free | grep Mem | awk '{print $3/$2 * 100.0}' | sed 's/\..*$//g')
 
     # Get used RAM % via python's psutil.
-    usedRamPercent=$(python3 -c 'import psutil ; print(psutil.virtual_memory().percent)' | sed 's/\..*$//g')
+    #usedRamPercent=$(python3 -c 'import psutil ; print(psutil.virtual_memory().percent)' | sed 's/\..*$//g')
+    
+    warningMessage="WARNING: RAM usage is $usedRamPercent (%) above $thresholdRamPercent percentage limit. Please free some RAM!"
+
 
     if [ $usedRamPercent -ge $thresholdRamPercent ] ; then
         # Send a notification
@@ -24,7 +24,7 @@ while true ; do
         Press OK to continue monitoring. Close this dialog to quit monitoring." || exit 1
     fi
 
-    # Refresh every 5 seconds
-    sleep 5
+    # Refresh every 15 seconds
+    sleep 15
 
 done
